@@ -11,9 +11,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  password: {
+    type: String,
+    required: true
+  },
   mobileNumber: {
     type: String,
-    required: true,
+    required: false,
     match: [/^[1-9][0-9]{9}$/, 'The value of path {PATH} ({VALUE}) is not a valid mobile number.']
   },
   createdAt: {
@@ -50,6 +54,22 @@ UserSchema.statics = {
       .then((user) => {
         if (user) {
           return user;
+        }
+        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
+
+  /**
+   * Verify Login username and password
+   * @param { Object } user - user.username, user.password
+   */
+  verifyLogin(user) {
+    return this.findOne(user)
+      .exec()
+      .then((verifyedUser) => {
+        if (verifyedUser) {
+          return verifyedUser;
         }
         const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);

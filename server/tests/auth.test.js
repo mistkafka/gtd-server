@@ -8,6 +8,7 @@ import config from '../../config/config';
 chai.config.includeStack = true;
 
 describe('## Auth APIs', () => {
+  let user = null;
   const validUserCredentials = {
     username: 'react',
     password: 'express'
@@ -19,6 +20,28 @@ describe('## Auth APIs', () => {
   };
 
   let jwtToken;
+
+  before((done) => {
+    request(app)
+      .post('/api/users')
+      .send(validUserCredentials)
+      .expect(httpStatus.OK)
+      .then((res) => {
+        user = res.body;
+        done();
+      })
+      .catch(done);
+  });
+
+  after((done) => {
+    request(app)
+      .delete(`/api/users/${user._id}`)
+      .expect(httpStatus.OK)
+      .then(() => {
+        done();
+      })
+      .catch(done);
+  });
 
   describe('# POST /api/auth/login', () => {
     it('should return Authentication error', (done) => {
