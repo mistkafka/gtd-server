@@ -1,7 +1,7 @@
-import Joi from 'joi';
+import Joi from 'joi'
 
 // require and configure dotenv, will load vars in .env in PROCESS.ENV
-require('dotenv').config();
+require('dotenv').config()
 
 // define validation for all the env vars
 const envVarsSchema = Joi.object({
@@ -25,11 +25,11 @@ const envVarsSchema = Joi.object({
   MONGO_DB: Joi.string().required()
     .description('Mongo database name')
 }).unknown()
-  .required();
+  .required()
 
-const { error, value: envVars } = Joi.validate(process.env, envVarsSchema);
+const { error, value: envVars } = Joi.validate(process.env, envVarsSchema)
 if (error) {
-  throw new Error(`Config validation error: ${error.message}`);
+  throw new Error(`Config validation error: ${error.message}`)
 }
 
 const config = {
@@ -42,6 +42,6 @@ const config = {
     port: envVars.MONGO_PORT
   },
   db: envVars.MONGO_DB
-};
+}
 
-export default config;
+export default config
