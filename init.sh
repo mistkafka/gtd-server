@@ -16,5 +16,7 @@ fi
 
 PROD="producstion"
 if [ "$NODE_ENV" != "$PROD" ]; then
-    docker run --name express-rest-dev --link mongo-server:mongodb.data.server -v `pwd`:/usr/src/app -p 3000:3000 -d express-rest-base:latest yarn start
+    docker stop express-rest-dev
+    docker rm express-rest-dev
+    docker run -it --name express-rest-dev --link mongo-server:mongodb.data.server -v `pwd`:/usr/src/app -p 3000:3000 express-rest-base:latest /bin/bash
 fi
