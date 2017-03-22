@@ -4,7 +4,7 @@ import User from '../models/user.model';
  * Load user and append to req.
  */
 function load(req, res, next, id) {
-  User.get(id)
+  User.getOne(id)
     .then((user) => {
       req.user = user; // eslint-disable-line no-param-reassign
       return next();

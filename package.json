@@ -18,6 +18,7 @@
     "lint:watch": "yarn lint -- --watch",
     "precommit": "yarn lint && docker exec -i express-rest-dev yarn test",
     "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
+    "test:debug": "yarn test debug",
     "test:watch": "yarn test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors --compilers js:babel-core/register server/tests --recursive",
     "test:check-coverage": "yarn test:coverage && istanbul check-coverage",
