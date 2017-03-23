@@ -16,5 +16,5 @@ export default function (ctrl, modelName) {
 
   router.param('id', ctrl.load)
 
-  return router;
+  return router
 }

@@ -9,19 +9,26 @@ export default {
       password: Joi.string().required()
     }
   },
-
   // UPDATE /api/users/:userId
   updateUser: {
     params: {
       id: Joi.string().hex().required()
     }
   },
-
   // POST /api/auth/login
   login: {
     body: {
       username: Joi.string().required(),
       password: Joi.string().required()
+    }
+  },
+
+  createAction: {
+  },
+
+  updateAction: {
+    params: {
+      id: Joi.string().hex().required()
     }
   }
 }
