@@ -36,6 +36,7 @@ describe('## Auth APIs', () => {
   after((done) => {
     request(app)
       .delete(`/api/users/${user._id}`)
+      .set('Authorization', jwtToken)
       .expect(httpStatus.OK)
       .then(() => {
         done()

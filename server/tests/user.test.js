@@ -23,6 +23,7 @@ describe('## User APIs', () => {
     mobileNumber: '1234567890',
     password: '123'
   }
+  let jwtToken
 
   describe('# POST /api/users', () => {
     it('should create a new user', async () => {
@@ -35,6 +36,12 @@ describe('## User APIs', () => {
           expect(res.body.mobileNumber).to.equal(user.mobileNumber)
           return res.body
         })
+
+      jwtToken = await request(app)
+        .post('/api/auth/login')
+        .send(user)
+        .expect(httpStatus.OK)
+        .then((res) => `Bearer ${res.body.token}`)
     })
   })
 
@@ -42,6 +49,7 @@ describe('## User APIs', () => {
     it('should get user details', async () => {
       await request(app)
         .get(`/api/users/${user._id}`)
+        .set('Authorization', jwtToken)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body.username).to.equal(user.username)
@@ -52,6 +60,7 @@ describe('## User APIs', () => {
     it('should report error with message - Not found, when user does not exists', async () => {
       await request(app)
         .get('/api/users/56c787ccc67fc16ccc1a5e92')
+        .set('Authorization', jwtToken)
         .expect(httpStatus.NOT_FOUND)
         .then((res) => {
           expect(res.body.message).to.equal('Not Found')
@@ -64,6 +73,7 @@ describe('## User APIs', () => {
       user.username = 'KK'
       await request(app)
         .put(`/api/users/${user._id}`)
+        .set('Authorization', jwtToken)
         .send(user)
         .expect(httpStatus.OK)
         .then((res) => {
@@ -77,6 +87,7 @@ describe('## User APIs', () => {
     it('should get all users', async () => {
       await request(app)
         .get('/api/users')
+        .set('Authorization', jwtToken)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body).to.be.an('array')
@@ -88,6 +99,7 @@ describe('## User APIs', () => {
     it('should delete user', async () => {
       await request(app)
         .delete(`/api/users/${user._id}`)
+        .set('Authorization', jwtToken)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body.username).to.equal('KK')

@@ -28,6 +28,7 @@ describe('## Action APIs', () => {
   after(async () => {
     await request(app)
       .delete(`/api/users/${user._id}`)
+      .set('Authorization', jwtToken)
       .expect(httpStatus.OK)
   })
 
