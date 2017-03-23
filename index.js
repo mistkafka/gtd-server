@@ -11,7 +11,7 @@ const debug = require('debug')('express-mongoose-es6-rest-api:index')
 mongoose.Promise = Promise
 
 // connect to mongo db
-const mongoUri = `${config.mongo.host}:${config.mongo.port}/${config.db}`
+const mongoUri = `${config.mongo.host}:${config.mongo.port}/${config.mongo.db}`
 mongoose.connect(mongoUri, { server: { socketOptions: { keepAlive: 1 } } })
 mongoose.connection.on('error', () => {
   throw new Error(`unable to connect to database: ${config.db}`)
