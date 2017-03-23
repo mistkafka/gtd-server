@@ -1,6 +1,10 @@
-export default function (Model) {
-  function load (req, res, next, id) {
-    Model.getOne(id)
+class Controller {
+  constructor (Model) {
+    this.Model = Model
+  }
+
+  load (req, res, next, id) {
+    this.Model.getOne(id)
       .then((ins) => {
         req.ins = ins // eslint-disable-line no-param-reassign
         return next()
@@ -8,33 +12,36 @@ export default function (Model) {
       .catch(e => next(e))
   }
 
-  function add (req, res, next) {
-    const ins = loader(Model, req.ins, req.body)
+  add (req, res, next) {
+    const ins = loader(this.Model, req.ins, req.body)
 
     ins.save()
       .then(savedIns => res.json(savedIns))
       .catch(e => next(e))
   }
 
-  function remove (req, res, next) {
+  remove (req, res, next) {
     const ins = req.ins
     ins.remove()
       .then(deletedIns => res.json(deletedIns))
       .catch(e => next(e))
   }
 
-  function get (req, res) {
+  get (req, res) {
     return res.json(req.ins)
   }
-  function list (req, res, next) {
+
+  list (req, res, next) {
     const { limit = 50, skip = 0 } = req.query
-    Model.list({ limit, skip })
+    this.Model.list({ limit, skip })
       .then(inses => res.json(inses))
       .catch(e => next(e))
   }
-
-  return { load, get, add, list, remove }
 }
+
+export default Controller
+
+// helper
 
 function loader (Model, ins, body) {
   if (!ins) {
@@ -44,6 +51,7 @@ function loader (Model, ins, body) {
   let keys = Object
         .keys(Model.schema.paths)
         .filter(_ => ['__v', '_id'].includes(_) === false)
+        .filter(_ => Model.schema.paths[_].updateAble !== false)
         .filter(_ => body[_] !== undefined)
 
   for (let _ of keys) {

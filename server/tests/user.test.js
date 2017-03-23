@@ -3,6 +3,7 @@ import request from 'supertest-as-promised'
 import httpStatus from 'http-status'
 import chai, { expect } from 'chai'
 import app from '../../index'
+import randomstring from 'randomstring'
 
 chai.config.includeStack = true
 
@@ -19,9 +20,9 @@ after((done) => {
 
 describe('## User APIs', () => {
   let user = {
-    username: 'KK123',
+    username: randomstring.generate(),
     mobileNumber: '1234567890',
-    password: '123'
+    password: randomstring.generate()
   }
   let jwtToken
 
@@ -70,14 +71,14 @@ describe('## User APIs', () => {
 
   describe('# PUT /api/users/:userId', () => {
     it('should update user details', async () => {
-      user.username = 'KK'
+      user.username = randomstring.generate()
       await request(app)
         .put(`/api/users/${user._id}`)
         .set('Authorization', jwtToken)
         .send(user)
         .expect(httpStatus.OK)
         .then((res) => {
-          expect(res.body.username).to.equal('KK')
+          expect(res.body.username).to.equal(user.username)
           expect(res.body.mobileNumber).to.equal(user.mobileNumber)
         })
     })
@@ -102,7 +103,7 @@ describe('## User APIs', () => {
         .set('Authorization', jwtToken)
         .expect(httpStatus.OK)
         .then((res) => {
-          expect(res.body.username).to.equal('KK')
+          expect(res.body.username).to.equal(user.username)
           expect(res.body.mobileNumber).to.equal(user.mobileNumber)
         })
     })

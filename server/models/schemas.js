@@ -51,6 +51,11 @@ export default {
     status: {
       type: String,
       default: 'Active'
+    },
+    owner: {
+      type: String,
+      required: true,
+      updateAble: false
     }
   },
 

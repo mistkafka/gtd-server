@@ -4,14 +4,15 @@ import jwt from 'jsonwebtoken'
 import chai, { expect } from 'chai'
 import app from '../../index'
 import config from '../../config/config'
+import randomstring from 'randomstring'
 
 chai.config.includeStack = true
 
 describe('## Auth APIs', () => {
   let user = null
   const validUserCredentials = {
-    username: 'react',
-    password: 'express'
+    username: randomstring.generate(),
+    password: randomstring.generate()
   }
 
   const invalidUserCredentials = {

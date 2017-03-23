@@ -1,13 +1,14 @@
 import request from 'supertest-as-promised'
 import httpStatus from 'http-status'
 import app from '../../index'
-
-const USER = {
-  username: 'react',
-  password: 'express'
-}
+import randomstring from 'randomstring'
 
 export default async function () {
+  const USER = {
+    username: randomstring.generate(),
+    password: randomstring.generate()
+  }
+
   let info = {
     user: null,
     jwtToken: null

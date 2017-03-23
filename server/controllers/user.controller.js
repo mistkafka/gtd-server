@@ -1,4 +1,5 @@
-import generateCtrl from './base.controller'
+import Controller from './base.controller'
 import User from '../models/user.model'
+import selfish from '../helpers/selfish.helper'
 
-export default generateCtrl(User)
+export default selfish(new Controller(User))

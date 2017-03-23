@@ -19,17 +19,24 @@ after((done) => {
 })
 
 describe('## Action APIs', () => {
-  let user
-  let jwtToken
+  let login1
+  let login2
   before(async () => {
-    ({user, jwtToken} = await login())
+    ([login1, login2] = await Promise.all([login(), login()]))
   })
 
   after(async () => {
-    await request(app)
-      .delete(`/api/users/${user._id}`)
-      .set('Authorization', jwtToken)
-      .expect(httpStatus.OK)
+    let r1 = request(app)
+          .delete(`/api/users/${login1.user._id}`)
+          .set('Authorization', login1.jwtToken)
+          .expect(httpStatus.OK)
+    let r2 = request(app)
+          .delete(`/api/users/${login2.user._id}`)
+          .set('Authorization', login2.jwtToken)
+          .expect(httpStatus.OK)
+
+    await r1
+    await r2
   })
 
   let action = {
@@ -55,10 +62,10 @@ describe('## Action APIs', () => {
   }
 
   describe('# POST /api/actions', () => {
-    it('should create a new action', async () => {
+    it('should create a new action which owner is login user', async () => {
       await request(app)
         .post('/api/actions')
-        .set('Authorization', jwtToken)
+        .set('Authorization', login1.jwtToken)
         .send(action)
         .expect(httpStatus.OK)
         .then((res) => {
@@ -71,6 +78,9 @@ describe('## Action APIs', () => {
           expect(res.body.target).to.equal(action.target)
           expect(res.body.processItems).to.deep.equal(action.processItems)
           expect(res.body.dueDate).to.equal(action.dueDate)
+
+          expect(res.body.owner).to.be.equal(login1.user._id)
+
           action = res.body
         })
     })
@@ -80,7 +90,7 @@ describe('## Action APIs', () => {
     it('should get action details', async () => {
       await request(app)
         .get(`/api/actions/${action._id}`)
-        .set('Authorization', jwtToken)
+        .set('Authorization', login1.jwtToken)
         .expect(httpStatus.OK)
         .then((res) => {
           res.body.dueDate = (new Date(res.body.dueDate)).toString()
@@ -98,7 +108,26 @@ describe('## Action APIs', () => {
     it('should report error with message - Not found, when action does not exists', async () => {
       await request(app)
         .get('/api/actions/56c787ccc67fc16ccc1a5e92')
-        .set('Authorization', jwtToken)
+        .set('Authorization', login1.jwtToken)
+        .expect(httpStatus.NOT_FOUND)
+        .then((res) => {
+          expect(res.body.message).to.equal('Not Found')
+        })
+    })
+
+    it('should report error with message - Not found, when load other user\'s action', async () => {
+      let othersAction = await request(app)
+            .post('/api/actions')
+            .set('Authorization', login2.jwtToken)
+            .send({title: 'sdfasdfk'})
+            .expect(httpStatus.OK)
+            .then((res) => {
+              return res.body
+            })
+
+      await request(app)
+        .get(`/api/actions/${othersAction._id}`)
+        .set('Authorization', login1.jwtToken)
         .expect(httpStatus.NOT_FOUND)
         .then((res) => {
           expect(res.body.message).to.equal('Not Found')
@@ -110,7 +139,7 @@ describe('## Action APIs', () => {
     it('should update action details', async () => {
       await request(app)
         .put(`/api/actions/${action._id}`)
-        .set('Authorization', jwtToken)
+        .set('Authorization', login1.jwtToken)
         .send(updateAction)
         .expect(httpStatus.OK)
         .then((res) => {
@@ -125,13 +154,23 @@ describe('## Action APIs', () => {
           expect(res.body.processItems).to.deep.equal(updateAction.processItems)
         })
     })
+
+    it('owner shouldn\'t be updated', async () => {
+      let res = await request(app)
+            .put(`/api/actions/${action._id}`)
+            .set('Authorization', login1.jwtToken)
+            .send({owner: 'ad231bcd'})
+            .expect(httpStatus.OK)
+
+      expect(res.body.owner).to.equal(login1.user._id)
+    })
   })
 
   describe('# GET /api/actions/', () => {
     it('should get all actions', async () => {
       await request(app)
         .get('/api/actions')
-        .set('Authorization', jwtToken)
+        .set('Authorization', login1.jwtToken)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body).to.be.an('array')
@@ -143,7 +182,7 @@ describe('## Action APIs', () => {
     it('should delete action', async () => {
       await request(app)
         .delete(`/api/actions/${action._id}`)
-        .set('Authorization', jwtToken)
+        .set('Authorization', login1.jwtToken)
         .expect(httpStatus.OK)
         .then((res) => {
           res.body.dueDate = (new Date(res.body.dueDate)).toString()
