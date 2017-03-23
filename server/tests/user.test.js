@@ -25,86 +25,74 @@ describe('## User APIs', () => {
   }
 
   describe('# POST /api/users', () => {
-    it('should create a new user', (done) => {
-      request(app)
+    it('should create a new user', async () => {
+      user = await request(app)
         .post('/api/users')
         .send(user)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body.username).to.equal(user.username)
           expect(res.body.mobileNumber).to.equal(user.mobileNumber)
-          user = res.body
-          done()
+          return res.body
         })
-        .catch(done)
     })
   })
 
   describe('# GET /api/users/:userId', () => {
-    it('should get user details', (done) => {
-      request(app)
+    it('should get user details', async () => {
+      await request(app)
         .get(`/api/users/${user._id}`)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body.username).to.equal(user.username)
           expect(res.body.mobileNumber).to.equal(user.mobileNumber)
-          done()
         })
-        .catch(done)
     })
 
-    it('should report error with message - Not found, when user does not exists', (done) => {
-      request(app)
+    it('should report error with message - Not found, when user does not exists', async () => {
+      await request(app)
         .get('/api/users/56c787ccc67fc16ccc1a5e92')
         .expect(httpStatus.NOT_FOUND)
         .then((res) => {
           expect(res.body.message).to.equal('Not Found')
-          done()
         })
-        .catch(done)
     })
   })
 
   describe('# PUT /api/users/:userId', () => {
-    it('should update user details', (done) => {
+    it('should update user details', async () => {
       user.username = 'KK'
-      request(app)
+      await request(app)
         .put(`/api/users/${user._id}`)
         .send(user)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body.username).to.equal('KK')
           expect(res.body.mobileNumber).to.equal(user.mobileNumber)
-          done()
         })
-        .catch(done)
     })
   })
 
   describe('# GET /api/users/', () => {
-    it('should get all users', (done) => {
-      request(app)
+    it('should get all users', async () => {
+      await request(app)
         .get('/api/users')
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body).to.be.an('array')
-          done()
         })
-        .catch(done)
     })
   })
 
   describe('# DELETE /api/users/', () => {
-    it('should delete user', (done) => {
-      request(app)
+    it('should delete user', async () => {
+      await request(app)
         .delete(`/api/users/${user._id}`)
         .expect(httpStatus.OK)
         .then((res) => {
           expect(res.body.username).to.equal('KK')
           expect(res.body.mobileNumber).to.equal(user.mobileNumber)
-          done()
         })
-        .catch(done)
     })
   })
 })

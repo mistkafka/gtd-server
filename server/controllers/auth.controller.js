@@ -17,7 +17,8 @@ function login (req, res, next) {
   User.verifyLogin({ username: req.body.username, password: req.body.password })
     .then((user) => {
       const token = jwt.sign({
-        username: user.username
+        username: user.username,
+        userid: user._id
       }, config.jwtSecret)
 
       return res.json({
