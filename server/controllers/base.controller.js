@@ -33,7 +33,8 @@ class Controller {
 
   list (req, res, next) {
     const { limit = 50, skip = 0 } = req.query
-    this.Model.list({ limit, skip })
+    const simpleQuery = req.simpleQuery
+    this.Model.list({ limit, skip, simpleQuery })
       .then(inses => res.json(inses))
       .catch(e => next(e))
   }

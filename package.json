@@ -17,7 +17,7 @@
     "lint": "NODE_ENV=production esw *.js server config --color",
     "lint:watch": "yarn lint -- --watch",
     "precommit": "yarn lint && docker exec -i express-rest-dev yarn test",
-    "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --reporter spec --colors --require babel-polyfill --compilers js:babel-register server/tests --recursive",
+    "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --full-trace --reporter spec --colors --require babel-polyfill --compilers js:babel-register server/tests --recursive",
     "test:debug": "DEBUG=worker,http yarn test debug",
     "test:watch": "yarn test -- --watch",
     "test:coverage": "cross-env NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha -- --ui bdd --reporter spec --colors --require babel-polyfill --compilers js:babel-register server/tests --recursive",

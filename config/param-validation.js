@@ -25,8 +25,16 @@ export default {
 
   createAction: {
   },
-
   updateAction: {
+    params: {
+      id: Joi.string().hex().required()
+    }
+  },
+
+  createProject: {
+  },
+
+  updateProject: {
     params: {
       id: Joi.string().hex().required()
     }

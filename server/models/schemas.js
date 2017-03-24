@@ -60,5 +60,30 @@ export default {
   },
 
   project: {
+    title: {
+      type: String,
+      default: ''
+    },
+    description: {
+      type: String,
+      default: ''
+    },
+    status: {
+      type: String,
+      default: 'Active'
+    },
+    dueDate: {
+      type: Date,
+      required: false
+    },
+    logs: {
+      type: Array,
+      default: []
+    },
+    owner: {
+      type: String,
+      required: true,
+      updateAble: false
+    }
   }
 }

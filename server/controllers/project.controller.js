@@ -1,8 +1,8 @@
 import Controller from './base.controller'
-import Action from '../models/action.model'
+import Project from '../models/project.model'
 import selfish from '../helpers/selfish.helper'
 
-class ActionCtrl extends Controller {
+class ProjectCtrl extends Controller {
   add (req, res, next) {
     req.body.owner = req.user.id
     return super.add(...arguments)
@@ -19,4 +19,4 @@ class ActionCtrl extends Controller {
 
 }
 
-export default selfish(new ActionCtrl(Action))
+export default selfish(new ProjectCtrl(Project))

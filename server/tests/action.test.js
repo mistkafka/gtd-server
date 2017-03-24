@@ -4,6 +4,9 @@ import httpStatus from 'http-status'
 import chai, { expect } from 'chai'
 import app from '../../index'
 import login from '../helpers/api.login.helper'
+import getREST from '../helpers/restful-test.helper'
+
+let REST = null
 
 chai.config.includeStack = true
 
@@ -23,20 +26,15 @@ describe('## Action APIs', () => {
   let login2
   before(async () => {
     ([login1, login2] = await Promise.all([login(), login()]))
+    REST = getREST('/api/actions', login1.jwtToken)
   })
 
   after(async () => {
-    let r1 = request(app)
-          .delete(`/api/users/${login1.user._id}`)
-          .set('Authorization', login1.jwtToken)
-          .expect(httpStatus.OK)
-    let r2 = request(app)
-          .delete(`/api/users/${login2.user._id}`)
-          .set('Authorization', login2.jwtToken)
-          .expect(httpStatus.OK)
-
-    await r1
-    await r2
+    let userREST = getREST('/api/users')
+    await Promise.all([
+      userREST.remove(login1.user._id, {token: login1.jwtToken}),
+      userREST.remove(login2.user._id, {token: login2.jwtToken})
+    ])
   })
 
   let action = {
@@ -63,106 +61,80 @@ describe('## Action APIs', () => {
 
   describe('# POST /api/actions', () => {
     it('should create a new action which owner is login user', async () => {
-      await request(app)
-        .post('/api/actions')
-        .set('Authorization', login1.jwtToken)
-        .send(action)
-        .expect(httpStatus.OK)
-        .then((res) => {
-          res.body.dueDate = (new Date(res.body.dueDate)).toString()
-          res.body.processItems = res.body.processItems.map((_) => {
-            _.date = (new Date(_.date)).toString()
-            return _
-          })
-          expect(res.body.title).to.equal(action.title)
-          expect(res.body.target).to.equal(action.target)
-          expect(res.body.processItems).to.deep.equal(action.processItems)
-          expect(res.body.dueDate).to.equal(action.dueDate)
+      let { body } = await REST.create(action)
 
-          expect(res.body.owner).to.be.equal(login1.user._id)
+      body.dueDate = (new Date(body.dueDate)).toString()
+      body.processItems = body.processItems.map((_) => {
+        _.date = (new Date(_.date)).toString()
+        return _
+      })
+      expect(body.title).to.equal(action.title)
+      expect(body.target).to.equal(action.target)
+      expect(body.processItems).to.deep.equal(action.processItems)
+      expect(body.dueDate).to.equal(action.dueDate)
+      expect(body.owner).to.be.equal(login1.user._id)
 
-          action = res.body
-        })
+      REST.remove(body._id)
     })
   })
 
   describe('# GET /api/actions/:id', () => {
     it('should get action details', async () => {
-      await request(app)
-        .get(`/api/actions/${action._id}`)
-        .set('Authorization', login1.jwtToken)
-        .expect(httpStatus.OK)
-        .then((res) => {
-          res.body.dueDate = (new Date(res.body.dueDate)).toString()
-          res.body.processItems = res.body.processItems.map((_) => {
-            _.date = (new Date(_.date)).toString()
-            return _
-          })
-          expect(res.body.title).to.equal(action.title)
-          expect(res.body.target).to.equal(action.target)
-          expect(res.body.processItems).to.deep.equal(action.processItems)
-          expect(res.body.dueDate).to.equal(action.dueDate)
-        })
+      let { body: newAction } = await REST.create(action)
+      let { body } = await REST.get(newAction._id)
+
+      body.dueDate = (new Date(body.dueDate)).toString()
+      body.processItems = body.processItems.map((_) => {
+        _.date = (new Date(_.date)).toString()
+        return _
+      })
+      expect(body.title).to.equal(action.title)
+      expect(body.target).to.equal(action.target)
+      expect(body.processItems).to.deep.equal(action.processItems)
+      expect(body.dueDate).to.equal(action.dueDate)
+
+      await REST.remove(newAction._id)
     })
 
     it('should report error with message - Not found, when action does not exists', async () => {
-      await request(app)
-        .get('/api/actions/56c787ccc67fc16ccc1a5e92')
-        .set('Authorization', login1.jwtToken)
-        .expect(httpStatus.NOT_FOUND)
-        .then((res) => {
-          expect(res.body.message).to.equal('Not Found')
-        })
+      let { body } = await REST.get('56c787ccc67fc16ccc1a5e92', {status: httpStatus.NOT_FOUND})
+
+      expect(body.message).to.equal('Not Found')
     })
 
     it('should report error with message - Not found, when load other user\'s action', async () => {
-      let othersAction = await request(app)
-            .post('/api/actions')
-            .set('Authorization', login2.jwtToken)
-            .send({title: 'sdfasdfk'})
-            .expect(httpStatus.OK)
-            .then((res) => {
-              return res.body
-            })
+      let { body: othersAction } = await REST.create(action, {token: login2.jwtToken})
+      let { body } = await REST.get(othersAction._id, {status: httpStatus.NOT_FOUND})
 
-      await request(app)
-        .get(`/api/actions/${othersAction._id}`)
-        .set('Authorization', login1.jwtToken)
-        .expect(httpStatus.NOT_FOUND)
-        .then((res) => {
-          expect(res.body.message).to.equal('Not Found')
-        })
+      expect(body.message).to.equal('Not Found')
+
+      await REST.remove(othersAction._id, {token: login2.jwtToken})
     })
   })
 
   describe('# PUT /api/actions/:id', () => {
     it('should update action details', async () => {
-      await request(app)
-        .put(`/api/actions/${action._id}`)
-        .set('Authorization', login1.jwtToken)
-        .send(updateAction)
-        .expect(httpStatus.OK)
-        .then((res) => {
-          res.body.dueDate = (new Date(res.body.dueDate)).toString()
-          res.body.processItems = res.body.processItems.map((_) => {
-            _.date = (new Date(_.date)).toString()
-            return _
-          })
-          expect(res.body.title).to.equal(updateAction.title)
-          expect(res.body.dueDate).to.equal(updateAction.dueDate)
-          expect(res.body.target).to.equal(updateAction.target)
-          expect(res.body.processItems).to.deep.equal(updateAction.processItems)
-        })
+      let { body: newAction } = await REST.create(action)
+      let { body } = await REST.update({...updateAction, _id: newAction._id})
+
+      body.dueDate = (new Date(body.dueDate)).toString()
+      body.processItems = body.processItems.map((_) => {
+        _.date = (new Date(_.date)).toString()
+        return _
+      })
+      expect(body.title).to.equal(updateAction.title)
+      expect(body.dueDate).to.equal(updateAction.dueDate)
+      expect(body.target).to.equal(updateAction.target)
+      expect(body.processItems).to.deep.equal(updateAction.processItems)
+
+      await REST.remove(newAction._id)
     })
 
     it('owner shouldn\'t be updated', async () => {
-      let res = await request(app)
-            .put(`/api/actions/${action._id}`)
-            .set('Authorization', login1.jwtToken)
-            .send({owner: 'ad231bcd'})
-            .expect(httpStatus.OK)
+      let { body: newAction } = await REST.create(action)
+      let { body } = await REST.update({owner: 'ad231bcd', _id: newAction._id})
 
-      expect(res.body.owner).to.equal(login1.user._id)
+      expect(body.owner).to.equal(login1.user._id)
     })
   })
 
@@ -176,25 +148,33 @@ describe('## Action APIs', () => {
           expect(res.body).to.be.an('array')
         })
     })
+
+    it('should only get self actions', async () => {
+      let action = {title: 'test'}
+      let actions = Array(5).fill(action)
+      actions = await REST.createMany(actions)
+      let res = await REST.list({token: login2.jwtToken})
+
+      expect(res.body.length).to.equal(0)
+
+      await REST.removeMany(actions.map(_ => _._id))
+    })
   })
 
   describe('# DELETE /api/actions/:id', () => {
     it('should delete action', async () => {
-      await request(app)
-        .delete(`/api/actions/${action._id}`)
-        .set('Authorization', login1.jwtToken)
-        .expect(httpStatus.OK)
-        .then((res) => {
-          res.body.dueDate = (new Date(res.body.dueDate)).toString()
-          res.body.processItems = res.body.processItems.map((_) => {
-            _.date = (new Date(_.date)).toString()
-            return _
-          })
-          expect(res.body.title).to.equal(updateAction.title)
-          expect(res.body.dueDate).to.equal(updateAction.dueDate)
-          expect(res.body.target).to.equal(updateAction.target)
-          expect(res.body.processItems).to.deep.equal(updateAction.processItems)
-        })
+      let { body: newAction } = await REST.create(action)
+      let { body } = await REST.remove(newAction._id)
+
+      body.dueDate = (new Date(body.dueDate)).toString()
+      body.processItems = body.processItems.map((_) => {
+        _.date = (new Date(_.date)).toString()
+        return _
+      })
+      expect(body.title).to.equal(action.title)
+      expect(body.dueDate).to.equal(action.dueDate)
+      expect(body.target).to.equal(action.target)
+      expect(body.processItems).to.deep.equal(action.processItems)
     })
   })
 })

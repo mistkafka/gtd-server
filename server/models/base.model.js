@@ -39,8 +39,8 @@ export default function generateModel (model, methods, statics) {
     /**
      * note: default sort by create date absc.
      */
-    list ({ skip = 0, limit = 50 } = {}) {
-      return this.find()
+    list ({ skip = 0, limit = 50, simpleQuery = {} } = {}) {
+      return this.find(simpleQuery)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
