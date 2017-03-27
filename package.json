@@ -14,6 +14,7 @@
     "start": "gulp serve",
     "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
     "cron": "node dist/cron.js",
+    "cron:dev": "NODE_ENV=development node dist/cron.js",
     "build": "gulp",
     "lint": "NODE_ENV=production esw *.js server config --color",
     "lint:watch": "yarn lint -- --watch",
