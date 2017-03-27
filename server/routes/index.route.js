@@ -3,6 +3,7 @@ import userRoutes from './user.route'
 import authRoutes from './auth.route'
 import actionRoutes from './action.route'
 import projectRoutes from './project.route'
+import contextRoutes from './context.route'
 import expressJwt from 'express-jwt'
 import config from '../../config/config'
 
@@ -17,5 +18,6 @@ router.use('/users', userRoutes)
 router.use('/auth', authRoutes)
 router.use('/actions', expressJwt({ secret: config.jwtSecret }), actionRoutes)
 router.use('/projects', expressJwt({ secret: config.jwtSecret }), projectRoutes)
+router.use('/contexts', expressJwt({ secret: config.jwtSecret }), contextRoutes)
 
 export default router

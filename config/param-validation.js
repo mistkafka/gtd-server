@@ -33,8 +33,15 @@ export default {
 
   createProject: {
   },
-
   updateProject: {
+    params: {
+      id: Joi.string().hex().required()
+    }
+  },
+
+  createContext: {
+  },
+  updateContext: {
     params: {
       id: Joi.string().hex().required()
     }

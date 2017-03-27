@@ -32,6 +32,10 @@ export default {
       type: String,
       default: ''
     },
+    context: {
+      type: String,
+      default: ''
+    },
     type: {
       type: String,
       default: 'Todo/Done'
@@ -45,6 +49,10 @@ export default {
       default: 1
     },
     processItems: {
+      type: Array,
+      default: []
+    },
+    logs: {
       type: Array,
       default: []
     },
@@ -79,6 +87,35 @@ export default {
     logs: {
       type: Array,
       default: []
+    },
+    reviewSchemas: {
+      type: Array,
+      default: ['every week']
+    },
+    reviewEvents: {
+      type: Array,
+      default: []
+    },
+    owner: {
+      type: String,
+      required: true,
+      updateAble: false
+    }
+  },
+
+  context: {
+    title: {
+      type: String,
+      required: true
+    },
+    description: {
+      type: String
+    },
+    location: {
+      type: String
+    },
+    device: {
+      type: String
     },
     owner: {
       type: String,

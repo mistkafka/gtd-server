@@ -13,6 +13,7 @@
   "scripts": {
     "start": "gulp serve",
     "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
+    "cron": "node dist/cron.js",
     "build": "gulp",
     "lint": "NODE_ENV=production esw *.js server config --color",
     "lint:watch": "yarn lint -- --watch",
@@ -65,6 +66,7 @@
     "method-override": "^2.3.5",
     "mongoose": "4.7.4",
     "morgan": "1.7.0",
+    "node-schedule": "^1.2.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
     "winston": "2.3.0"
