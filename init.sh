@@ -5,6 +5,8 @@ while getopts ":f" arg
 do
     case $arg in
         f)
+            docker stop $(docker ps -a --filter "ancestor= express-rest-base:latest" -q)
+            docker rm $(docker ps -a --filter "ancestor= express-rest-base:latest" -q)
             docker rmi express-rest-base:latest # force rebuid base image
     esac
 done

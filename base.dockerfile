@@ -9,3 +9,4 @@ RUN npm install -g cnpm --registry=https://registry.npm.taobao.org
 RUN cnpm install -g yarn 
 RUN yarn config set registry 'https://registry.npm.taobao.org' 
 RUN yarn
+RUN echo "Asia/Shanghai" > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
