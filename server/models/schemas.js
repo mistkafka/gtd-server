@@ -48,10 +48,6 @@ export default {
       type: Number,
       default: 1
     },
-    processItems: {
-      type: Array,
-      default: []
-    },
     logs: {
       type: Array,
       default: []

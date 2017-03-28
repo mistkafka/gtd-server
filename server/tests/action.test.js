@@ -44,7 +44,6 @@ describe('## Action APIs', () => {
     type: 'Todo/Done',
     dueDate: (new Date('2017-04-21 18:08:20')).toString(),
     target: 1,
-    processItems: [],
     statics: 'Active'
   }
 
@@ -52,11 +51,6 @@ describe('## Action APIs', () => {
     title: 'Cook 7 times',
     dueDate: (new Date('2017-04-22 18:08:20')).toString(),
     target: 7,
-    processItems: [
-      {date: (new Date('2017-04-22 18:08:20')).toString(), log: 'for grandmother'},
-      {date: (new Date('2017-04-22 18:08:21')).toString(), log: 'for papa'},
-      {date: (new Date('2017-04-22 18:08:22')).toString(), log: 'for mom'}
-    ]
   }
 
   describe('# POST /api/actions', () => {
@@ -64,13 +58,8 @@ describe('## Action APIs', () => {
       let { body } = await REST.create(action)
 
       body.dueDate = (new Date(body.dueDate)).toString()
-      body.processItems = body.processItems.map((_) => {
-        _.date = (new Date(_.date)).toString()
-        return _
-      })
       expect(body.title).to.equal(action.title)
       expect(body.target).to.equal(action.target)
-      expect(body.processItems).to.deep.equal(action.processItems)
       expect(body.dueDate).to.equal(action.dueDate)
       expect(body.owner).to.be.equal(login1.user._id)
 
@@ -84,13 +73,8 @@ describe('## Action APIs', () => {
       let { body } = await REST.get(newAction._id)
 
       body.dueDate = (new Date(body.dueDate)).toString()
-      body.processItems = body.processItems.map((_) => {
-        _.date = (new Date(_.date)).toString()
-        return _
-      })
       expect(body.title).to.equal(action.title)
       expect(body.target).to.equal(action.target)
-      expect(body.processItems).to.deep.equal(action.processItems)
       expect(body.dueDate).to.equal(action.dueDate)
 
       await REST.remove(newAction._id)
@@ -118,14 +102,9 @@ describe('## Action APIs', () => {
       let { body } = await REST.update({...updateAction, _id: newAction._id})
 
       body.dueDate = (new Date(body.dueDate)).toString()
-      body.processItems = body.processItems.map((_) => {
-        _.date = (new Date(_.date)).toString()
-        return _
-      })
       expect(body.title).to.equal(updateAction.title)
       expect(body.dueDate).to.equal(updateAction.dueDate)
       expect(body.target).to.equal(updateAction.target)
-      expect(body.processItems).to.deep.equal(updateAction.processItems)
 
       await REST.remove(newAction._id)
     })
@@ -167,14 +146,9 @@ describe('## Action APIs', () => {
       let { body } = await REST.remove(newAction._id)
 
       body.dueDate = (new Date(body.dueDate)).toString()
-      body.processItems = body.processItems.map((_) => {
-        _.date = (new Date(_.date)).toString()
-        return _
-      })
       expect(body.title).to.equal(action.title)
       expect(body.dueDate).to.equal(action.dueDate)
       expect(body.target).to.equal(action.target)
-      expect(body.processItems).to.deep.equal(action.processItems)
     })
   })
 })
