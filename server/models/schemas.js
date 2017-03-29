@@ -108,7 +108,7 @@ export default {
       type: String
     },
     location: {
-      type: String
+      type: Array
     },
     device: {
       type: String

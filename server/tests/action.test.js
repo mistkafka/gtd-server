@@ -50,7 +50,7 @@ describe('## Action APIs', () => {
   let updateAction = {
     title: 'Cook 7 times',
     dueDate: (new Date('2017-04-22 18:08:20')).toString(),
-    target: 7,
+    target: 7
   }
 
   describe('# POST /api/actions', () => {
