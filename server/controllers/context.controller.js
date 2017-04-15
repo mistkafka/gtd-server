@@ -1,5 +1,5 @@
 import Controller from './base.controller'
-import Context from '../models/Context.model'
+import Context from '../models/context.model'
 import selfish from '../helpers/selfish.helper'
 
 class ContextCtrl extends Controller {
