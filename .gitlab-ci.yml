@@ -1,3 +1,5 @@
+image: node:latest
+
 stages:
   - test
 
@@ -6,4 +8,4 @@ job1:
   script:
     - echo "hello, world"
     - pwd
-    - /root/.nvm/versions/node/v7.4.0/bin/node --version
+    - node --versiton
