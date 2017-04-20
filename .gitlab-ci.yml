@@ -1,0 +1,8 @@
+stages:
+  - test
+
+job1:
+  stage: test
+  script:
+    - echo "hello, world"
+    - pwd
