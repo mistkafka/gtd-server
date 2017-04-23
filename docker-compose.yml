@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  mongo-server:
+    image: mongo:latest
+    volumes:
+      - /data/db:/data/db
+
+  web-server:
+    depends_on:
+      - mongo-server
+    build: .
+    ports:
+      - "3000:3000"
