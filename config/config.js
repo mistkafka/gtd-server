@@ -18,6 +18,8 @@ const envVarsSchema = Joi.object({
     }),
   JWT_SECRET: Joi.string().required()
     .description('JWT Secret required to sign'),
+  MONGO_USER: Joi.string(),
+  MONGO_PASS: Joi.string(),
   MONGO_HOST: Joi.string().required()
     .description('Mongo DB host url'),
   MONGO_PORT: Joi.number()
@@ -27,7 +29,9 @@ const envVarsSchema = Joi.object({
   TEST_MONGO_HOST: Joi.string().required()
     .description('Mongo DB host url for run test case'),
   TEST_MONGO_PORT: Joi.number()
-    .default(27017)
+    .default(27017),
+  TEST_MONGO_USER: Joi.string(),
+  TEST_MONGO_PASS: Joi.string()
 }).unknown()
   .required()
 
@@ -42,6 +46,8 @@ const config = {
   mongooseDebug: envVars.MONGOOSE_DEBUG,
   jwtSecret: envVars.JWT_SECRET,
   mongo: {
+    user: envVars.MONGO_USER,
+    pass: envVars.MONGO_PASS,
     host: envVars.MONGO_HOST,
     port: envVars.MONGO_PORT,
     db: envVars.MONGO_DB
@@ -49,9 +55,25 @@ const config = {
 }
 
 if (envVars.NODE_ENV === 'test') {
+  config.mongo.user = envVars.TEST_MONGO_USER
+  config.mongo.pass = envVars.TEST_MONGO_PASS
   config.mongo.host = envVars.TEST_MONGO_HOST
   config.mongo.port = envVars.TEST_MONGO_PORT
   config.mongo.db = `test_${(new Date()).getTime()}`
 }
+
+function getMongoUri(mongo) {
+  let uri = '';
+  let {user, pass, host, port, db} = mongo
+  uri = `${host}:${port}/${db}`
+  if (user) {
+    uri = `${user}:${pass}@${uri}`
+  }
+  uri = `mongodb://${uri}`
+
+  return uri
+}
+
+config.mongo.uri = getMongoUri(config.mongo)
 
 export default config
