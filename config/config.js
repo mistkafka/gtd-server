@@ -26,7 +26,7 @@ const envVarsSchema = Joi.object({
     .default(27017),
   MONGO_DB: Joi.string().required()
     .description('Mongo database name'),
-  TEST_MONGO_HOST: Joi.string().required()
+  TEST_MONGO_HOST: Joi.string()
     .description('Mongo DB host url for run test case'),
   TEST_MONGO_PORT: Joi.number()
     .default(27017),
@@ -62,8 +62,8 @@ if (envVars.NODE_ENV === 'test') {
   config.mongo.db = `test_${(new Date()).getTime()}`
 }
 
-function getMongoUri(mongo) {
-  let uri = '';
+function getMongoUri (mongo) {
+  let uri = ''
   let {user, pass, host, port, db} = mongo
   uri = `${host}:${port}/${db}`
   if (user) {
