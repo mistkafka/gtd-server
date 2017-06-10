@@ -60,7 +60,11 @@ export default {
       type: String,
       required: true,
       updateAble: false
-    }
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
   },
 
   project: {
@@ -96,7 +100,11 @@ export default {
       type: String,
       required: true,
       updateAble: false
-    }
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
   },
 
   context: {
