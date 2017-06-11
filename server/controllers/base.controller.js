@@ -32,7 +32,8 @@ class Controller {
   }
 
   list (req, res, next) {
-    const { limit = 50, skip = 0 } = req.query
+    let limit = Number(req.query.limit || '50')
+    let skip = Number(req.query.skip || '0')
     const simpleQuery = req.simpleQuery
     this.Model.list({ limit, skip, simpleQuery })
       .then(inses => res.json(inses))
