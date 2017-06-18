@@ -65,6 +65,10 @@ export default {
       type: Boolean,
       default: false
     },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
   },
 
   project: {
@@ -92,10 +96,6 @@ export default {
       type: Array,
       default: ['every week']
     },
-    reviewEvents: {
-      type: Array,
-      default: []
-    },
     owner: {
       type: String,
       required: true,
@@ -105,6 +105,10 @@ export default {
       type: Boolean,
       default: false
     },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    }
   },
 
   context: {
