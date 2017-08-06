@@ -23,5 +23,9 @@ if [ "$NODE_ENV" != "$PROD" ]; then
     docker stop mongo-server-test
     docker rm mongo-server-test
     docker run --name mongo-server-test -d mongo
-    docker run -it --name express-rest-dev --link mongo-server:mongodb.data.server --link mongo-server-test:mongodb-test.data.server -v `pwd`:/usr/src/app -p 3000:3000 express-rest-base:latest /bin/bash
+    docker run -it --name express-rest-dev \
+           --link mongo-server:mongodb.data.server \
+           --link mongo-server-test:mongodb-test.data.server \
+           --link redis-server:redis.data.server \
+           -v `pwd`:/usr/src/app -p 3000:3000 express-rest-base:latest /bin/bash
 fi

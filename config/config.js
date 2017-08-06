@@ -26,12 +26,18 @@ const envVarsSchema = Joi.object({
     .default(27017),
   MONGO_DB: Joi.string().required()
     .description('Mongo database name'),
+
   TEST_MONGO_HOST: Joi.string()
     .description('Mongo DB host url for run test case'),
   TEST_MONGO_PORT: Joi.number()
     .default(27017),
   TEST_MONGO_USER: Joi.string(),
-  TEST_MONGO_PASS: Joi.string()
+  TEST_MONGO_PASS: Joi.string(),
+
+  REDIS_HOST: Joi.string().default('localhost'),
+  REDIS_PORT: Joi.number().default(6379),
+
+  AUTH_TOKEN_URL: Joi.string().required(),
 }).unknown()
   .required()
 
@@ -51,6 +57,11 @@ const config = {
     host: envVars.MONGO_HOST,
     port: envVars.MONGO_PORT,
     db: envVars.MONGO_DB
+  },
+  redis: {
+    host: envVars.REDIS_HOST,
+    port: envVars.REDIS_PORT,
+    uri: `redis://${envVars.REDIS_HOST}:${envVars.REDIS_PORT}`,
   }
 }
 
@@ -75,5 +86,8 @@ function getMongoUri (mongo) {
 }
 
 config.mongo.uri = getMongoUri(config.mongo)
+config.sso = {
+  authTokenUrl: envVars.AUTH_TOKEN_URL
+}
 
 export default config

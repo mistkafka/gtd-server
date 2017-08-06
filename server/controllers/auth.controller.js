@@ -3,14 +3,10 @@ import httpStatus from 'http-status'
 import APIError from '../helpers/APIError'
 import config from '../../config/config'
 import User from '../models/user.model'
+import redis from 'redis'
 
-/**
- * Returns jwt token if valid username and password is provided
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
+const redisClient = redis.createClient({url: config.redis.uri})
+
 function login (req, res, next) {
   // Ideally you'll fetch this from the db
   // Idea here was to show how jwt works with simplicity
@@ -20,6 +16,8 @@ function login (req, res, next) {
         username: user.username,
         id: user._id
       }, config.jwtSecret)
+
+      redisClient.set(token, '1')
 
       return res.json({
         token,
@@ -32,12 +30,12 @@ function login (req, res, next) {
     })
 }
 
-/**
- * This is a protected route. Will return random number only if jwt token is provided in header.
- * @param req
- * @param res
- * @returns {*}
- */
+function logout (req, res, next) {
+  const token = req.body.token || ''
+  redisClient.del(token)
+  res.end('ok')
+}
+
 function getRandomNumber (req, res) {
   // req.user is assigned by jwt middleware if valid token is provided
   return res.json({
@@ -46,4 +44,29 @@ function getRandomNumber (req, res) {
   })
 }
 
-export default { login, getRandomNumber }
+async function authToken (req, res, next) {
+  const token = req.body.token
+  if (!token) {
+    res.end('failed')
+  }
+
+  redisClient.get(token, (err, isExists) => {
+    if (err) {
+      next(err)
+    }
+
+    if (isExists) {
+      res.end('ok')
+    } else {
+      err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true)
+      next(err)
+    }
+  })
+}
+
+export default {
+  login,
+  logout,
+  getRandomNumber,
+  authToken,
+}
