@@ -20,22 +20,30 @@ export default config => {
   const ssoAuthMiddleware = function (req, res, next) {
     const token = getTokenFromHeaderQueryCookie(req)
 
-    if (redisClient.get(token)) {
-      return next()
-    }
-
-    request({
-      uri: config.authUrl,
-      method: 'POST',
-      body: {
-        token: token
+    redisClient.get('client:' + token, (err, isExist) => {
+      if (err) {
+        err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true)
+        return next(err)
       }
-    }).then(function (res) {
-      redisClient.set(token, '1')
-      next()
-    }).catch(function (NO_USE) {
-      const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true)
-      return next(err)
+
+      if (isExist) {
+        return next()
+      }
+
+      request({
+        uri: config.authUrl,
+        method: 'POST',
+        body: {
+          token: token
+        },
+        json: true
+      }).then(function (res) {
+        redisClient.set('client:' + token, '1')
+        next()
+      }).catch(function (NO_USE) {
+        const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true)
+        return next(err)
+      })
     })
   }
 

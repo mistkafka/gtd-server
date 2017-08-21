@@ -4,8 +4,8 @@ import authRoutes from './auth.route'
 import actionRoutes from './action.route'
 import projectRoutes from './project.route'
 import contextRoutes from './context.route'
-import expressJwt from 'express-jwt'
-import config from '../../config/config'
+import appRoutes from './app.route'
+import SSOAuth from '../helpers/get-sso-auth'
 
 const router = express.Router() // eslint-disable-line new-cap
 
@@ -16,8 +16,9 @@ router.get('/health-check', (req, res) =>
 
 router.use('/users', userRoutes)
 router.use('/auth', authRoutes)
-router.use('/actions', expressJwt({ secret: config.jwtSecret }), actionRoutes)
-router.use('/projects', expressJwt({ secret: config.jwtSecret }), projectRoutes)
-router.use('/contexts', expressJwt({ secret: config.jwtSecret }), contextRoutes)
+router.use('/actions', SSOAuth, actionRoutes)
+router.use('/projects', SSOAuth, projectRoutes)
+router.use('/contexts', SSOAuth, contextRoutes)
+router.use('/apps', SSOAuth, appRoutes)
 
 export default router

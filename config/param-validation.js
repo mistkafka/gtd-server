@@ -45,5 +45,14 @@ export default {
     params: {
       id: Joi.string().hex().required()
     }
+  },
+
+  createApp: {
+  },
+  updateApp: {
+    params: {
+      id: Joi.string().hex().required()
+    }
   }
+
 }

@@ -11,14 +11,12 @@
     "yarn": ">=0.20.3"
   },
   "scripts": {
-    "start": "gulp serve",
-    "start:debug": "cross-env DEBUG=express-mongoose-es6-rest-api:* yarn start",
-    "cron": "node dist/cron.js",
-    "cron:dev": "NODE_ENV=development node dist/cron.js",
+    "dev": "babel-node index.js",
+    "dev:debug": "babel-node --inspect index.js",
     "build": "gulp",
     "lint": "NODE_ENV=production esw *.js server config --color",
     "lint:watch": "yarn lint -- --watch",
-    "precommit": "yarn lint && docker exec -i express-rest-dev yarn test",
+    "precommit": "yarn lint && yarn test",
     "test": "cross-env NODE_ENV=test ./node_modules/.bin/mocha --ui bdd --full-trace --reporter spec --colors --require babel-polyfill --compilers js:babel-register server/tests --recursive",
     "test:debug": "DEBUG=worker,http yarn test debug",
     "test:watch": "yarn test -- --watch",
@@ -74,7 +72,7 @@
     "winston": "2.3.0"
   },
   "devDependencies": {
-    "babel-cli": "6.18.0",
+    "babel-cli": "^6.18.0",
     "babel-core": "6.18.0",
     "babel-eslint": "^7.1.1",
     "babel-plugin-add-module-exports": "0.2.1",

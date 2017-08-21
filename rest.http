@@ -1,0 +1,42 @@
+:host := (setq host "127.0.0.1")
+:port := (setq port 3000)
+:base-url := (format "http://%s:%d/api" host port)
+
+# login
+POST :base-url/auth/login
+Content-Type: application/json
+{
+  "username": "test",
+  "password": "1"
+}
+
+# SSO Auth Test
+GET :base-url/auth/random-number
+Cookie: jwtToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjU5ODZiMTQ4MmY2Mjk1MDE2MGQ5YjU5ZiIsImlhdCI6MTUwMjUwMjU4MH0.jBTi7mZnU79Jb5KFgDNpZH3O0qLIAcuHWdTBrm7MBqE
+
+# SSO Auth Test: Authorization Header
+GET :base-url/auth/random-number
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjU5ODZiMTQ4MmY2Mjk1MDE2MGQ5YjU5ZiIsImlhdCI6MTUwMjUwMjU4MH0.jBTi7mZnU79Jb5KFgDNpZH3O0qLIAcuHWdTBrm7MBqE
+
+
+# get apps
+GET :base-url/apps
+Cookie: jwtToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjU5ODZiMTQ4MmY2Mjk1MDE2MGQ5YjU5ZiIsImlhdCI6MTUwMzMzNzA2M30.11Y-J5Cm52VpXowzsEbSmy9NBPaBeYx60fyy5W2dZ3I
+
+# get apps with invalid token
+GET :base-url/apps
+Cookie: jwtToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjU5ODZiMTQ4MmY2Mjk1MDE2MGQ5YjU5ZiIsImlhdCI6MTUwMjIwNDI5NX0.WZyMtWeun6rhKJBfEUkJU0_yIYA3zpbe1RAmrjeAMrE
+
+
+# create app
+POST :base-url/apps
+Cookie: jwtToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjU5ODZiMTQ4MmY2Mjk1MDE2MGQ5YjU5ZiIsImlhdCI6MTUwMjI4OTk0N30.gsNBqU8BMsMt6WP-l_vRK-WmcHbNiTnJ_yGWTSc0LrM
+{
+    "domain": "app1.domain1.com",
+    "name": "app1",
+    "appKeys": "askdf8212348asdkf812341234jaskdfasdf823asdf"
+}
+
+# get special app
+GET :base-url/apps/56c787ccc67fc16ccc1a5e92
+Cookie: jwtToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJpZCI6IjU5ODZiMTQ4MmY2Mjk1MDE2MGQ5YjU5ZiIsImlhdCI6MTUwMzMzNzA2M30.11Y-J5Cm52VpXowzsEbSmy9NBPaBeYx60fyy5W2dZ3I

@@ -1,10 +1,7 @@
 import express from 'express'
 import validate from 'express-validation'
 import paramValidation from '../../config/param-validation'
-import expressJwt from 'express-jwt'
-import config from '../../config/config'
-
-const auth = expressJwt({ secret: config.jwtSecret })
+import SSOAuth from '../helpers/get-sso-auth'
 
 export default function (ctrl, modelName, extRules) {
   const router = express.Router() // eslint-disable-line new-cap
@@ -26,10 +23,10 @@ export default function (ctrl, modelName, extRules) {
 
 function getDefaultRules (ctrl, modelName) {
   return {
-    list: [auth, ctrl.list],
-    create: [auth, validate(paramValidation[`create${modelName}`]), ctrl.add],
-    get: [auth, ctrl.get],
-    update: [auth, validate(paramValidation[`update${modelName}`]), ctrl.add],
-    delete: [auth, ctrl.remove]
+    list: [SSOAuth, ctrl.list],
+    create: [SSOAuth, validate(paramValidation[`create${modelName}`]), ctrl.add],
+    get: [SSOAuth, ctrl.get],
+    update: [SSOAuth, validate(paramValidation[`update${modelName}`]), ctrl.add],
+    delete: [SSOAuth, ctrl.remove]
   }
 }

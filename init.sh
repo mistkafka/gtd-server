@@ -27,5 +27,8 @@ if [ "$NODE_ENV" != "$PROD" ]; then
            --link mongo-server:mongodb.data.server \
            --link mongo-server-test:mongodb-test.data.server \
            --link redis-server:redis.data.server \
-           -v `pwd`:/usr/src/app -p 3000:3000 express-rest-base:latest /bin/bash
+           -v `pwd`:/usr/src/app \
+           -p 3000:3000 \
+           -p 9229:9229 \
+           express-rest-base:latest /bin/bash
 fi
