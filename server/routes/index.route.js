@@ -4,6 +4,9 @@ import authRoutes from './auth.route'
 import actionRoutes from './action.route'
 import projectRoutes from './project.route'
 import contextRoutes from './context.route'
+import runningMemberRoutes from './running-member.route'
+import runningWeekRoutes from './running-week.route'
+import runningRecordRoutes from './running-record.route'
 import expressJwt from 'express-jwt'
 import config from '../../config/config'
 
@@ -19,5 +22,8 @@ router.use('/auth', authRoutes)
 router.use('/actions', expressJwt({ secret: config.jwtSecret }), actionRoutes)
 router.use('/projects', expressJwt({ secret: config.jwtSecret }), projectRoutes)
 router.use('/contexts', expressJwt({ secret: config.jwtSecret }), contextRoutes)
+router.use('/running-members', runningMemberRoutes)
+router.use('/running-weeks', runningWeekRoutes)
+router.use('/running-records', runningRecordRoutes)
 
 export default router

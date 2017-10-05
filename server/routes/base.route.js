@@ -27,9 +27,9 @@ export default function (ctrl, modelName, extRules) {
 function getDefaultRules (ctrl, modelName) {
   return {
     list: [auth, ctrl.list],
-    create: [auth, validate(paramValidation[`create${modelName}`]), ctrl.add],
+    create: [auth, validate(paramValidation[`create${modelName}`] || {}), ctrl.add],
     get: [auth, ctrl.get],
-    update: [auth, validate(paramValidation[`update${modelName}`]), ctrl.add],
+    update: [auth, validate(paramValidation[`update${modelName}`] || {}), ctrl.add],
     delete: [auth, ctrl.remove]
   }
 }

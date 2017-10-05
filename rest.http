@@ -1,0 +1,81 @@
+:host := (setq host "127.0.0.1")
+:port := (setq port 3000)
+:base-url := <<
+(format "http://%s:%d/api" host port)
+#
+
+# 创建running-member
+POST :base-url/running-members
+Content-Type: application/json
+{
+"name": "Jolie",
+"exit": false,
+"suspend": true
+}
+
+# 查询running-member
+GET :base-url/running-members
+
+# 获取running-member详情
+GET :base-url/running-members/59d629793831e506a30a60bb
+
+# 修改running-member
+PUT :base-url/running-members/59d629793831e506a30a60bb
+Content-Type: application/json
+{
+"name": "Kafka",
+"exit": false,
+"suspend": true
+}
+
+# 删除running-member
+DELETE :base-url/running-members/59d629793831e506a30a60bb
+
+
+# ====================================================================================================
+
+# 创建running-weeks
+POST :base-url/running-weeks
+Content-Type: application/json
+{
+"fromUnix": "2017-10-01",
+"endUnix": "2017-10-07",
+"year": 2017,
+"month": 56,
+"weekOfMonth": 4,
+"preSumContribution": 23,
+"weekContribution": 2343,
+"sumContribution": 28342,
+"isParty": false,
+"partyCost": 2302.23
+}
+
+# 获取running-weeks列表
+GET :base-url/running-weeks
+
+# 获取某条running-weeks详情
+GET :base-url/running-weeks/59d62b1f3831e506a30a60bc
+
+# 修改running-weeks
+PUT :base-url/running-weeks/59d62b1f3831e506a30a60bc
+Content-Type: application/json
+{
+"month": 55
+}
+
+# 删除running-weeks
+DELETE :base-url/running-weeks/59d62b1f3831e506a30a60bc
+
+# ====================================================================================================
+
+# 创建running-records
+POST :base-url/running-records
+Content-Type: application/json
+{
+"memberId": 1234,
+"memberName": "jolie",
+"isAchieve": false,
+"contributionMoney": 0,
+"remarks": "what's this?",
+"weekId": 234
+}

@@ -130,5 +130,80 @@ export default {
       required: true,
       updateAble: false
     }
+  },
+
+  RunningMember: {
+    name: {
+      type: String
+    },
+    exit: {
+      type: Boolean
+    },
+    suspend: {
+      type: Boolean
+    },
+    memberId: {
+      type: Number
+    }
+  },
+
+  RunningWeek: {
+    fromUnix: {
+      type: Date
+    },
+    endUnix: {
+      type: Date
+    },
+    year: {
+      type: Number
+    },
+    month: {
+      type: Number
+    },
+    weekOfMonth: {
+      type: Number
+    },
+    preSumContribution: {
+      type: Number
+    },
+    weekContribution: {
+      type: Number
+    },
+    sumContribution: {
+      type: Number
+    },
+    isParty: {
+      type: Boolean
+    },
+    partyCost: {
+      type: Number
+    },
+    weekId: {
+      type: Number
+    }
+  },
+
+  RunningRecord: {
+    memberId: {
+      type: Number
+    },
+    memberName: {
+      type: String
+    },
+    isAchieve: {
+      type: Boolean
+    },
+    contributionMoney: {
+      type: Number
+    },
+    remarks: {
+      type: String
+    },
+    weekId: {
+      type: Number
+    },
+    recordId: {
+      type: Number
+    }
   }
 }

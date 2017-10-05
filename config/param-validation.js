@@ -39,11 +39,18 @@ export default {
     }
   },
 
-  createContext: {
+  createRunningMember: {
   },
-  updateContext: {
-    params: {
-      id: Joi.string().hex().required()
-    }
+  updateRunningMember: {
+  },
+
+  createRunningWeek: {
+  },
+  updateRunningWeek: {
+  },
+
+  createRunningRecord: {
+  },
+  updateRunningRecord: {
   }
 }
